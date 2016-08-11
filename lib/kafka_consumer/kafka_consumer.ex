@@ -22,10 +22,18 @@ defmodule KafkaConsumer do
   ### GenServer Callbacks
 
   def init(%{topic: topic, partition: partition} = settings) do
-    worker_name = [topic, partition] |> Enum.join("$") |> String.to_atom
+    consumer_name = [topic, partition] |> Enum.join("$") |> String.to_atom
+    worker_name = [topic, partition, "stream"] |> Enum.join("$") |> String.to_atom
+    send self(), {:registry, consumer_name}
     send self(), {:consume, Map.put(settings, :worker_name, worker_name)}
 
-    {:ok, %{topic: topic, partition: partition, worker_name: worker_name}}
+    {:ok, %{topic: topic, partition: partition,
+     worker_name: worker_name, consumer_name: consumer_name}}
+  end
+
+  def handle_info({:registry, consumer_name}, state) do
+    :gproc.reg({:n, :l, consumer_name})
+    {:noreply, state}
   end
 
   def handle_info({:consume,
@@ -38,7 +46,8 @@ defmodule KafkaConsumer do
     {:stop, :normal, state}
   end
 
-  def terminate(_reason, %{worker_name: worker_name} = _state) do
+  def terminate(_reason, %{worker_name: worker_name, consumer_name: consumer_name} = _state) do
+    :gproc.unreg({:n, :l, consumer_name})
     Utils.stop_stream(worker_name)
     :ok
   end
@@ -52,7 +61,7 @@ defmodule KafkaConsumer do
   def consume(%{topic: topic, partition: partition, worker_name: worker_name,
       handler: handler, handler_pool: handler_pool}, consumer) do
     if Utils.topic_exists?(topic, partition) do
-      Utils.prepare_stream(worker_name)
+      Utils.prepare_stream(worker_name, {topic, partition})
       for message <- KafkaEx.stream(topic, partition, worker_name: worker_name) do
         :poolboy.transaction(handler_pool, fn(pid) ->
           handler.handle_event(pid, {topic, partition, message})

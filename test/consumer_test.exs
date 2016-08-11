@@ -2,23 +2,27 @@ defmodule KafkaConsumer.ConsumerTest do
   use ExUnit.Case, async: false
   alias KafkaConsumer.{Settings, TestEventHandlerSup}
 
-  test "consumer started if settings valid" do
+  test "starts consumer if settings valid" do
+    {:ok, _} = start_pool
     {:ok, pid} = start_consumer
 
     assert Process.alive?(pid)
   end
 
-  test "consumer stoping if consumer with the same topic/partition already start" do
+  test "consumer stops when consumer with the same topic/partition already started" do
     Process.flag(:trap_exit, true)
-    start_consumer
-    res = KafkaConsumer.start_link(settings_template)
+
+    {:ok, _} = start_pool
+    {:ok, _} = start_consumer
+
+    result = start_consumer
+
     :timer.sleep(200)
 
-    assert match? {:error, {:already_started, _}}, res
+    assert {:error, {:already_started, _}} = result
   end
 
   defp start_consumer do
-    start_pool
     KafkaConsumer.start_link(settings_template)
   end
 
@@ -28,10 +32,8 @@ defmodule KafkaConsumer.ConsumerTest do
 
   defp settings_template do
     %Settings{topic: "topic",
-     partition: 0,
-     handler: KafkaConsumer.TestEventHandler,
-     handler_pool: :test_event_handler_pool
-   }
+              partition: 0,
+              handler: KafkaConsumer.TestEventHandler,
+              handler_pool: :test_event_handler_pool}
   end
-
 end

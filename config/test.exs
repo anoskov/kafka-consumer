@@ -7,3 +7,6 @@ config :kafka_ex,
   sync_timeout: 3000,
   max_restarts: 10,
   max_seconds: 60
+
+config :kafka_consumer,
+  event_handlers: []

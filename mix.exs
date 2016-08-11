@@ -13,13 +13,16 @@ defmodule KafkaConsumer.Mixfile do
   end
 
   def application do
-    [applications: [:kafka_ex] ++ applications(Mix.env)]
+    [applications: [:kafka_ex, :poolboy] ++ applications(Mix.env)]
   end
 
   def applications(_),     do: []
 
   defp deps do
-    [{:kafka_ex, "0.5.0"}]
+    [
+      {:kafka_ex, "0.5.0"},
+      {:poolboy, "~> 1.5"}
+    ]
   end
 
   defp description do

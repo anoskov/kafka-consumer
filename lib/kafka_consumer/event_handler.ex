@@ -1,4 +1,4 @@
-defmodule EventHandler do
+defmodule KafkaConsumer.EventHandler do
   use Behaviour
 
   @doc """

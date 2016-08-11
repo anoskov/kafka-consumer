@@ -44,10 +44,11 @@ defmodule KafkaConsumer do
   end
 
   def handle_info(:topic_not_found, state) do
-    {:stop, :normal, state}
+    {:stop, :topic_not_found, state}
   end
 
-  def terminate(:duplicate, state) do
+  def terminate(reason, state)
+      when reason in [:topic_not_found, :duplicate] do
     :ok
   end
 

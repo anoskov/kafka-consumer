@@ -26,39 +26,8 @@ defmodule KafkaConsumer.Utils do
   """
   @spec stop_stream(atom) :: atom
   def stop_stream(worker_name) do
-    if stream_exists?(worker_name) do
-      unreg_stream(worker_name)
-      KafkaEx.stop_streaming(worker_name: worker_name)
-    end
+    KafkaEx.stop_streaming(worker_name: worker_name)
     :ok
   end
 
-  @doc """
-    Registry stream in gproc
-  """
-  @spec reg_stream(atom) :: pid
-  def reg_stream(worker_name) do
-    :gproc.reg({:n, :l, worker_name})
-  end
-
-  @doc """
-    Unregistry stream in gproc
-  """
-  @spec unreg_stream(atom) :: pid
-  def unreg_stream(worker_name) do
-    :gproc.unreg({:n, :l, worker_name})
-  end
-
-  @doc """
-    Check stream process in gproc
-  """
-  @spec stream_exists?(atom) :: boolean
-  def stream_exists?(worker_name) do
-    case :gproc.where({:n, :l, worker_name}) do
-      :undefined ->
-        false
-      _pid ->
-        true
-    end
-  end
 end

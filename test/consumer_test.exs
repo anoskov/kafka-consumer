@@ -11,10 +11,10 @@ defmodule KafkaConsumer.ConsumerTest do
   test "consumer stoping if consumer with the same topic/partition already start" do
     Process.flag(:trap_exit, true)
     start_consumer
-    {:ok, pid} = KafkaConsumer.start_link(settings_template)
+    res = KafkaConsumer.start_link(settings_template)
     :timer.sleep(200)
 
-    assert Process.alive?(pid) == false
+    assert match? {:error, {:already_started, _}}, res
   end
 
   defp start_consumer do

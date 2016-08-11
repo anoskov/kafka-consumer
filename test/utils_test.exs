@@ -17,17 +17,4 @@ defmodule KafkaConsumer.UtilsTest do
     Utils.prepare_stream(:"topic$0$stream")
     assert Process.whereis(:"topic$0$stream")
   end
-
-  test "reg stream registry worker process in gproc" do
-    Utils.reg_stream(:"topic$0$stream")
-
-    assert :gproc.where({:n, :l, :"topic$0$stream"}) != :undefined
-  end
-
-  test "reg stream unregistry worker process in gproc" do
-    Utils.reg_stream(:"topic$0$stream")
-    Utils.unreg_stream(:"topic$0$stream")
-
-    assert :gproc.where({:n, :l, :"topic$0$stream"}) == :undefined
-  end
 end

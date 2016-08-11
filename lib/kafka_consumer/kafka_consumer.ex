@@ -15,27 +15,18 @@ defmodule KafkaConsumer do
    handler_pool: atom
  }
 
-  def start_link(settings) do
-    GenServer.start_link(__MODULE__, settings, [])
+  def start_link(%{topic: topic, partition: partition} = settings) do
+    consumer_name = [topic, partition] |> Enum.join("$")
+    GenServer.start_link(__MODULE__, settings, name: via_tuple(consumer_name))
   end
 
   ### GenServer Callbacks
 
   def init(%{topic: topic, partition: partition} = settings) do
     worker_name = [topic, partition, "stream"] |> Enum.join("$") |> String.to_atom
-    send self(), {:registry, worker_name}
     send self(), {:consume, Map.put(settings, :worker_name, worker_name)}
 
     {:ok, %{topic: topic, partition: partition, worker_name: worker_name}}
-  end
-
-  def handle_info({:registry, worker_name}, state) do
-    if Utils.stream_exists?(worker_name) do
-      {:stop, :duplicate, state}
-    else
-      Utils.reg_stream(worker_name)
-      {:noreply, state}
-    end
   end
 
   def handle_info({:consume, settings}, state) do
@@ -47,8 +38,7 @@ defmodule KafkaConsumer do
     {:stop, :topic_not_found, state}
   end
 
-  def terminate(reason, state)
-      when reason in [:topic_not_found, :duplicate] do
+  def terminate(:topic_not_found, _state) do
     :ok
   end
 
@@ -76,5 +66,10 @@ defmodule KafkaConsumer do
       send consumer, :topic_not_found
     end
     :ok
+  end
+
+  @spec via_tuple(String.t) :: {atom, atom, {atom, atom, {atom, String.t}}}
+  defp via_tuple(worker_name) do
+    {:via, :gproc, {:n, :l, {:consumer, worker_name}}}
   end
 end

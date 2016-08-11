@@ -24,6 +24,17 @@ end
 
 ## Usage
 
+* Set config or pass default attributes
+
+```elixir
+config :kafka_consumer,
+  kafka_host: "localhost",
+  consumer_group: "kafka_ex" ,
+  sync_timeout: 3000,
+  max_restarts: 10,
+  max_seconds: 60
+```
+
 * Add event handler pool/pools to your Supervisor
 ```elixir
 poolboy_config = [

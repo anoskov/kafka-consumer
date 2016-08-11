@@ -15,41 +15,50 @@ defmodule KafkaConsumer.Utils do
   @doc """
     Stop stream worker if it alredy exists or start it if not
   """
-  @spec prepare_stream(atom, {String.t, number}) :: atom
-  def prepare_stream(worker_name, endpoint) do
-    if Process.whereis(worker_name) && consumer_exists?(endpoint) do
+  @spec prepare_stream(atom) :: atom
+  def prepare_stream(worker_name) do
+    KafkaEx.create_worker(worker_name)
+    :ok
+  end
+
+  @doc """
+    Stop stream and unreg process in gproc
+  """
+  @spec stop_stream(atom) :: atom
+  def stop_stream(worker_name) do
+    if stream_exists?(worker_name) do
+      unreg_stream(worker_name)
       KafkaEx.stop_streaming(worker_name: worker_name)
-    else
-      KafkaEx.create_worker(worker_name)
     end
     :ok
   end
 
   @doc """
-    Stop stream
+    Registry stream in gproc
   """
-  @spec stop_stream(atom) :: atom
-  def stop_stream(worker_name) do
-    if Process.whereis(worker_name), do: KafkaEx.stop_streaming(worker_name: worker_name)
-    :ok
+  @spec reg_stream(atom) :: pid
+  def reg_stream(worker_name) do
+    :gproc.reg({:n, :l, worker_name})
   end
 
-  @spec consumer_exists?({String.t, number}) :: boolean
-  defp consumer_exists?(endpoint) do
-    case :gproc.where({:n, :l, consumer_name(endpoint)}) do
+  @doc """
+    Unregistry stream in gproc
+  """
+  @spec unreg_stream(atom) :: pid
+  def unreg_stream(worker_name) do
+    :gproc.unreg({:n, :l, worker_name})
+  end
+
+  @doc """
+    Check stream process in gproc
+  """
+  @spec stream_exists?(atom) :: boolean
+  def stream_exists?(worker_name) do
+    case :gproc.where({:n, :l, worker_name}) do
       :undefined ->
         false
       _pid ->
         true
     end
   end
-
-  @spec consumer_name({String.t, number}) :: atom
-  defp consumer_name(endpoint) do
-    endpoint
-    |> Tuple.to_list
-    |> Enum.join("$")
-    |> String.to_atom
-  end
-
 end

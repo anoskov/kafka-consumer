@@ -1,6 +1,6 @@
 defmodule KafkaConsumer.UtilsTest do
   use ExUnit.Case, async: false
-  alias KafkaConsumer.{Utils, Settings}
+  alias KafkaConsumer.{Utils}
   import Mock
 
   test_with_mock "topic_exists? return false if topic not found", KafkaEx,

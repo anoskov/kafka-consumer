@@ -1,6 +1,6 @@
 defmodule KafkaConsumer.ConsumerTest do
   use ExUnit.Case, async: false
-  alias KafkaConsumer.{Utils, Settings, TestEventHandlerSup}
+  alias KafkaConsumer.{Settings, TestEventHandlerSup}
 
   test "consumer started if settings valid" do
     {:ok, pid} = start_consumer

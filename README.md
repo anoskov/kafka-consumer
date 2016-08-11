@@ -14,7 +14,7 @@ def deps do
 end
 ```
 
-2. Ensure `ccs_sdk` is started before your application:
+2. Ensure `kafka_consumer` is started before your application:
 
 ```elixir
 def application do

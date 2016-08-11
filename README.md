@@ -34,7 +34,7 @@ config :kafka_ex,
   max_seconds: 60
 ```
 
-* Write your own EventHandler. Functions start_link/1 and handle_event/3 is overridable
+* Write your own EventHandler. Functions start_link/1 and handle_event/2 is overridable
 ```elixir
 defmodule EventHandler do
   use KafkaConsumer.EventHandler

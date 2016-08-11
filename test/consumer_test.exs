@@ -6,7 +6,7 @@ defmodule KafkaConsumer.ConsumerTest do
 
   test "starts consumer if settings valid" do
     {:ok, _} = start_pool
-    {:ok, pid} = start_consumer
+    {:ok, pid} = start_consumer(settings_template())
 
     assert Process.alive?(pid)
   end
@@ -24,25 +24,35 @@ defmodule KafkaConsumer.ConsumerTest do
     Process.flag(:trap_exit, true)
 
     {:ok, _} = start_pool
-    {:ok, _} = start_consumer
+    {:ok, _} = start_consumer(settings_template())
 
-    result = start_consumer
+    result = start_consumer(settings_template())
 
     :timer.sleep(200)
 
     assert {:error, {:already_started, _}} = result
   end
 
-  defp start_consumer do
-    Server.start_link(settings_template)
+  test "consumer stops when topic not found" do
+    Process.flag(:trap_exit, true)
+
+    {:ok, pid} = start_consumer(settings_template("unexistent-topic"))
+
+    :timer.sleep(200)
+
+    refute Process.alive?(pid)
+  end
+
+  defp start_consumer(settings) do
+    Server.start_link(settings)
   end
 
   defp start_pool do
     TestEventHandlerSup.start_link
   end
 
-  defp settings_template do
-    %Settings{topic: "topic",
+  defp settings_template(topic \\ "topic") do
+    %Settings{topic: topic,
               partition: 0,
               handler: KafkaConsumer.TestEventHandler,
               handler_pool: :test_event_handler_pool}

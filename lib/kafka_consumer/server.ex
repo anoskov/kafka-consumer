@@ -18,7 +18,10 @@ defmodule KafkaConsumer.Server do
   end
 
   def handle_info({:consume, settings}, state) do
-    spawn_link(fn -> consume(settings, self()) end)
+    consumer_pid = self()
+
+    spawn_link(fn -> consume(settings, consumer_pid) end)
+
     {:noreply, state}
   end
 

@@ -6,7 +6,7 @@ Scalable consumer for Kafka using kafka_ex, poolboy and elixir.
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
-1. Add `kafka_consumer` to your list of dependencies in `mix.exs`:
+* Add `kafka_consumer` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -14,7 +14,7 @@ def deps do
 end
 ```
 
-2. Ensure `kafka_consumer` is started before your application:
+* Ensure `kafka_consumer` is started before your application:
 
 ```elixir
 def application do
@@ -24,7 +24,7 @@ end
 
 ## Usage
 
-1. Add event handler pool/pools to your Supervisor
+* Add event handler pool/pools to your Supervisor
 ```elixir
 poolboy_config = [
   {:name, {:local, :test_event_handler_pool}},
@@ -36,7 +36,7 @@ children = [:poolboy.child_spec(:event_handler_pool, poolboy_config, [])]
 supervise(children, strategy: :one_for_one)
 ```
 
-2. Write your own EventHandler
+* Write your own EventHandler
 ```elixir
 defmodule EventHandler do
   @behaviour KafkaConsumer.EventHandler
@@ -58,7 +58,7 @@ defmodule EventHandler do
 end
 ```
 
-3. Set settings for consumer
+* Set settings for consumer
 ```elixir
 settings = %KafkaConsumer.Settings{topic: "topic",
  partition: 0,
@@ -67,12 +67,12 @@ settings = %KafkaConsumer.Settings{topic: "topic",
 }
 ```
 
-4. Start your event handler pool
+* Start your event handler pool
 ```elixir
 TestEventHandlerSup.start_link
 ```
 
-5. Start consumer
+* Start consumer
 ```elixir
 KafkaConsumer.start_link(settings)
 ```

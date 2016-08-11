@@ -69,15 +69,22 @@ defmodule KafkaConsumer.Utils do
     [topic, partition] |> Enum.join("$") |> String.to_atom
   end
 
-  defp event_handler_spec({topic, partition, handler, handler_pool, size, max_overflow}) do
-    pool = poolboy_spec(handler_pool, handler, size, max_overflow)
-    worker = worker(Server,
-      [%KafkaConsumer.Settings{topic: topic,
-          partition: partition,
-          handler: handler,
-          handler_pool: handler_pool}],
-      [id: supervisor_worker_id(topic, partition)])
-    [pool, worker]
+  # defp event_handler_spec({topic, partition, handler, handler_pool, size, max_overflow}) do
+  defp event_handler_spec({handler, topics, opts}) do
+    size = Keyword.get(opts, :size, default_pool_size())
+    max_overflow = Keyword.get(opts, :max_overflow, default_pool_max_overflow())
+
+    pool = poolboy_spec(handler, handler, size, max_overflow)
+    handlers = Enum.map(topics, fn({topic, partition}) ->
+      worker(Server,
+        [%KafkaConsumer.Settings{topic: topic,
+                                 partition: partition,
+                                 handler: handler,
+                                 handler_pool: handler}],
+        [id: supervisor_worker_id(topic, partition)])
+    end)
+
+    [pool, handlers]
   end
 
   defp poolboy_spec(name, handler, size, max_overflow) do
@@ -93,5 +100,13 @@ defmodule KafkaConsumer.Utils do
 
   defp event_handlers do
     Application.get_env(:kafka_consumer, :event_handlers)
+  end
+
+  defp default_pool_size do
+    Application.get_env(:kafka_consumer, :default_pool_size)
+  end
+
+  defp default_pool_max_overflow do
+    Application.get_env(:kafka_consumer, :default_pool_max_overflow)
   end
 end

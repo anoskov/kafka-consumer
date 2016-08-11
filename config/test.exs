@@ -11,6 +11,8 @@ config :kafka_ex,
   max_seconds: 60
 
 config :kafka_consumer,
+  default_pool_size: 5,
+  default_pool_max_overflow: 10,
   event_handlers: [
-    {"topic", 1, KafkaConsumer.TestEventHandler, :handler_pool, 5, 5}
+    {KafkaConsumer.TestEventHandler, [{"topic", 1}], size: 5, max_overflow: 10}
   ]

@@ -1,7 +1,6 @@
 defmodule KafkaConsumer.Utils do
-
   @doc """
-    Check topic in Kafka
+  Check topic in Kafka
   """
   @spec topic_exists?(String.t, Integer.t) :: boolean
   def topic_exists?(topic, partition) do
@@ -13,7 +12,7 @@ defmodule KafkaConsumer.Utils do
   end
 
   @doc """
-    Stop stream worker if it alredy exists or start it if not
+  Stop stream worker if it alredy exists or start it if not
   """
   @spec prepare_stream(atom) :: atom
   def prepare_stream(worker_name) do
@@ -22,12 +21,11 @@ defmodule KafkaConsumer.Utils do
   end
 
   @doc """
-    Stop stream and unreg process in gproc
+  Stop stream and unreg process in gproc
   """
   @spec stop_stream(atom) :: atom
   def stop_stream(worker_name) do
     KafkaEx.stop_streaming(worker_name: worker_name)
     :ok
   end
-
 end

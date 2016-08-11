@@ -6,7 +6,7 @@ defmodule KafkaConsumer.EventHandler do
   @doc """
   Start Event Handler
   """
-  @callback start_link(term()) :: {atom, pid} | {atom, {atom, pid}}
+  @callback start_link(term()) :: GenServer.on_start
 
   @doc """
   Handle event from topic

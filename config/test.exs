@@ -11,4 +11,6 @@ config :kafka_ex,
   max_seconds: 60
 
 config :kafka_consumer,
-  event_handlers: []
+  event_handlers: [
+    {"topic", 1, KafkaConsumer.TestEventHandler, :handler_pool, 5, 5}
+  ]

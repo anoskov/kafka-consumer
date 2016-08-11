@@ -1,12 +1,23 @@
 defmodule KafkaConsumer.ConsumerTest do
   use ExUnit.Case, async: false
-  alias KafkaConsumer.{Settings, TestEventHandlerSup}
+
+  alias KafkaConsumer.Supervisor, as: KafkaConsumerSupervisor
+  alias KafkaConsumer.{Settings, Server, TestEventHandlerSup}
 
   test "starts consumer if settings valid" do
     {:ok, _} = start_pool
     {:ok, pid} = start_consumer
 
     assert Process.alive?(pid)
+  end
+
+  test "starts consumer workers from config topic$1" do
+    result = Supervisor.which_children(KafkaConsumerSupervisor)
+    child = Enum.find(result, fn({name, _pid, _type, _args}) ->
+      name == :"topic$1"
+    end)
+
+    assert {_name, _pid, :worker, [Server]} = child
   end
 
   test "consumer stops when consumer with the same topic/partition already started" do
@@ -23,7 +34,7 @@ defmodule KafkaConsumer.ConsumerTest do
   end
 
   defp start_consumer do
-    KafkaConsumer.start_link(settings_template)
+    Server.start_link(settings_template)
   end
 
   defp start_pool do

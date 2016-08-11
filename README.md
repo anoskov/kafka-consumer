@@ -25,42 +25,19 @@ end
 ## Usage
 
 * Set config or pass default attributes
-
 ```elixir
-config :kafka_consumer,
-  kafka_host: "localhost",
+config :kafka_ex,
+  brokers: [{"localhost", 9092}],
   consumer_group: "kafka_ex" ,
   sync_timeout: 3000,
   max_restarts: 10,
   max_seconds: 60
 ```
 
-* Add event handler pool/pools to your Supervisor
-```elixir
-poolboy_config = [
-  {:name, {:local, :test_event_handler_pool}},
-  {:worker_module, KafkaConsumer.TestEventHandler},
-  {:size, 5},
-  {:max_overflow, 5}
-]
-children = [:poolboy.child_spec(:event_handler_pool, poolboy_config, [])]
-supervise(children, strategy: :one_for_one)
-```
-
-* Write your own EventHandler
+* Write your own EventHandler. Functions start_link/1 and handle_event/3 is overridable
 ```elixir
 defmodule EventHandler do
-  @behaviour KafkaConsumer.EventHandler
-  use GenServer
-  require Logger
-
-  def start_link(_args) do
-    GenServer.start_link(__MODULE__, [], [])
-  end
-
-  def handle_event(pid, data) do
-    GenServer.cast(pid, data)
-  end
+  use KafkaConsumer.EventHandler
 
   def handle_cast({topic, _partition, message}, state) do
     Logger.debug "from #{topic} message: #{inspect message}"
@@ -69,21 +46,13 @@ defmodule EventHandler do
 end
 ```
 
-* Set settings for consumer
+* Set event handlers in config. Format - {topic_name, partition, handler, handler_pool, size, max_overflow}
 ```elixir
-settings = %KafkaConsumer.Settings{topic: "topic",
- partition: 0,
- handler: TestEventHandler,
- handler_pool: :test_event_handler_pool
-}
+config :kafka_consumer,
+  event_handlers: [
+    {"topic", 0, KafkaConsumer.TestEventHandler, :handler_pool, 5, 5},
+    {"topic2", 0, KafkaConsumer.TestEventHandler, :handler_pool, 5, 5},
+  ]
 ```
 
-* Start your event handler pool
-```elixir
-TestEventHandlerSup.start_link
-```
-
-* Start consumer
-```elixir
-KafkaConsumer.start_link(settings)
-```
+* Start your app.

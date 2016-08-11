@@ -13,7 +13,10 @@ defmodule KafkaConsumer.Mixfile do
   end
 
   def application do
-    [applications: [:kafka_ex, :poolboy, :gproc] ++ applications(Mix.env)]
+    [
+      mod: {KafkaConsumer.Application, []},
+      applications: [:kafka_ex, :poolboy, :gproc] ++ applications(Mix.env)
+    ]
   end
 
   def applications(_),     do: []
@@ -33,7 +36,7 @@ defmodule KafkaConsumer.Mixfile do
   end
 
   defp package do
-    [name: :ccs_sdk,
+    [name: :kafka_consumer,
      files: ["lib", "mix.exs"],
      maintainers: ["Andrey Noskov"],
      licenses: ["MIT"],

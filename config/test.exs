@@ -1,5 +1,7 @@
 use Mix.Config
 
+config :logger, level: :warn
+
 config :kafka_ex,
   brokers: [{"localhost", 9092}],
   consumer_group: "kafka_ex",

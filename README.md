@@ -14,11 +14,11 @@ def deps do
 end
 ```
 
-* Ensure `kafka_consumer` is started before your application:
+* Ensure `kafka_consumer` and `gproc` is started before your application:
 
 ```elixir
 def application do
-  [applications: [:kafka_consumer]]
+  [applications: [:kafka_consumer, :gproc]]
 end
 ```
 

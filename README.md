@@ -48,7 +48,7 @@ defmodule EventHandler do
 end
 ```
 
-* Set event handlers in config. Format - {topic_name, partition, handler, handler_pool, size, max_overflow}
+* Set event handlers in config.
 
 ```elixir
 config :kafka_consumer,

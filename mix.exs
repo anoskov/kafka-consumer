@@ -37,7 +37,7 @@ defmodule KafkaConsumer.Mixfile do
   defp package do
     [name: :kafka_consumer,
      files: ["lib", "mix.exs"],
-     maintainers: ["Andrey Noskov"],
+     maintainers: ["Andrey Noskov", "Yuri Artemev"],
      licenses: ["MIT"],
      links: %{"GitHub" => "https://github.com/anoskov/kafka-consumer"}]
   end

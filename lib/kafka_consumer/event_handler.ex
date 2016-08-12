@@ -1,12 +1,10 @@
 defmodule KafkaConsumer.EventHandler do
-  use Behaviour
-
   @type payload :: {String.t, number, map}
 
   @doc """
   Start Event Handler
   """
-  @callback start_link(term()) :: {atom, pid} | {atom, {atom, pid}}
+  @callback start_link(term) :: GenServer.on_start
 
   @doc """
   Handle event from topic
@@ -15,8 +13,9 @@ defmodule KafkaConsumer.EventHandler do
 
   defmacro __using__(_) do
     quote do
-      @behaviour unquote(__MODULE__)
       use GenServer
+
+      @behaviour unquote(__MODULE__)
 
       def start_link(args) do
         GenServer.start_link(__MODULE__, args, [])

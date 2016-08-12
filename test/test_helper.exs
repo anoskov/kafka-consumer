@@ -35,3 +35,5 @@ defmodule KafkaConsumer.TestEventHandler do
     {:noreply, state}
   end
 end
+
+Application.ensure_all_started(:kafka_consumer)

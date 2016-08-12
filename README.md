@@ -25,6 +25,7 @@ end
 ## Usage
 
 * Set config or pass default attributes
+
 ```elixir
 config :kafka_ex,
   brokers: [{"localhost", 9092}],
@@ -35,6 +36,7 @@ config :kafka_ex,
 ```
 
 * Write your own EventHandler. Functions start_link/1 and handle_event/2 is overridable
+
 ```elixir
 defmodule EventHandler do
   use KafkaConsumer.EventHandler
@@ -47,12 +49,18 @@ end
 ```
 
 * Set event handlers in config. Format - {topic_name, partition, handler, handler_pool, size, max_overflow}
+
 ```elixir
 config :kafka_consumer,
+  default_pool_size: 5,
+  default_pool_max_overflow: 10,
   event_handlers: [
-    {"topic", 0, KafkaConsumer.TestEventHandler, :handler_pool, 5, 5},
-    {"topic2", 0, KafkaConsumer.TestEventHandler, :handler_pool, 5, 5},
+    {KafkaConsumer.TestEventHandler, [{"topic", 0}, {"topic2", 0}], size: 5, max_overflow: 5}
   ]
 ```
 
 * Start your app.
+
+## Configuration
+
+`event_handlers` key in configuration accepts list of tuples `{handler_module, topics, opts}`, where you can omit options parameter and worker use default values (acceptable for pool size and max_overflow).

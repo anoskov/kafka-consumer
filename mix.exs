@@ -8,27 +8,26 @@ defmodule KafkaConsumer.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps(),
+     aliases: aliases(),
      description: description(),
      package: package()]
   end
 
   def application do
-    [
-      mod: {KafkaConsumer.Application, []},
-      applications: [:kafka_ex, :poolboy, :gproc] ++ applications(Mix.env)
-    ]
+    [mod: {KafkaConsumer, []},
+     applications: [:kafka_ex, :poolboy, :gproc]]
   end
 
-  def applications(_),     do: []
-
   defp deps do
-    [
-      {:kafka_ex, "0.5.0"},
-      {:poolboy, "~> 1.5"},
-      {:mock, "~> 0.1.1", only: :test},
-      {:ex_doc, ">= 0.0.0", only: :dev},
-      {:gproc, "~> 0.5.0"}
-    ]
+    [{:kafka_ex, "0.5.0"},
+     {:poolboy, "~> 1.5"},
+     {:gproc, "~> 0.5.0"},
+     {:mock, "~> 0.1.1", only: :test},
+     {:ex_doc, ">= 0.0.0", only: :dev}]
+  end
+
+  defp aliases do
+    ["test": ["test --no-start"]]
   end
 
   defp description do
@@ -40,6 +39,6 @@ defmodule KafkaConsumer.Mixfile do
      files: ["lib", "mix.exs"],
      maintainers: ["Andrey Noskov"],
      licenses: ["MIT"],
-     links: %{}]
+     links: %{"GitHub" => "https://github.com/anoskov/kafka-consumer"}]
   end
 end

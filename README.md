@@ -42,9 +42,9 @@ defmodule EventHandler do
   use KafkaConsumer.EventHandler
   require Logger
 
-  def handle_cast({topic, _partition, message}, state) do
+  def handle_call({topic, _partition, message}, _from, state) do
     Logger.debug "from #{topic} message: #{inspect message}"
-    {:noreply, state}
+    {:reply, :ok, state}
   end
 end
 ```

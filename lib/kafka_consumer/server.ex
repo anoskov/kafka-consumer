@@ -49,8 +49,10 @@ defmodule KafkaConsumer.Server do
     if Utils.topic_exists?(topic, partition) do
       Utils.prepare_stream(worker_name)
       for message <- KafkaEx.stream(topic, partition, worker_name: worker_name) do
-        :poolboy.transaction(handler_pool, fn(pid) ->
-          handler.handle_event(pid, {topic, partition, message})
+        spawn(fn ->
+          :poolboy.transaction(handler_pool, fn(pid) ->
+            handler.handle_event(pid, {topic, partition, message})
+          end)
         end)
       end
     else

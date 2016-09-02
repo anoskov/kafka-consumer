@@ -22,7 +22,7 @@ defmodule KafkaConsumer.EventHandler do
       end
 
       def handle_event(pid, payload) do
-        GenServer.cast(pid, payload)
+        GenServer.call(pid, payload)
       end
 
       defoverridable start_link: 1, handle_event: 2

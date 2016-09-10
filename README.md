@@ -10,7 +10,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 ```elixir
 def deps do
-  [{:kafka_consumer, "~> 1.0"]
+  [{:kafka_consumer, "~> 1.0"}]
 end
 ```
 

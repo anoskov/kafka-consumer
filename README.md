@@ -10,7 +10,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 ```elixir
 def deps do
-  [{:kafka_consumer, "~> 1.0"]
+  [{:kafka_consumer, "~> 1.0"}]
 end
 ```
 
@@ -40,6 +40,7 @@ config :kafka_ex,
 ```elixir
 defmodule EventHandler do
   use KafkaConsumer.EventHandler
+  require Logger
 
   def handle_cast({topic, _partition, message}, state) do
     Logger.debug "from #{topic} message: #{inspect message}"

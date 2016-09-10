@@ -40,6 +40,7 @@ config :kafka_ex,
 ```elixir
 defmodule EventHandler do
   use KafkaConsumer.EventHandler
+  require Logger
 
   def handle_cast({topic, _partition, message}, state) do
     Logger.debug "from #{topic} message: #{inspect message}"

@@ -19,10 +19,10 @@ defmodule KafkaConsumer.Mixfile do
   end
 
   defp deps do
-    [{:kafka_ex, "0.5.0"},
+    [{:kafka_ex, "0.6.0"},
      {:poolboy, "~> 1.5"},
-     {:gproc, "~> 0.5.0"},
-     {:mock, "~> 0.1.1", only: :test},
+     {:gproc, "~> 0.6.0"},
+     {:mock, "~> 0.2.0", only: :test},
      {:ex_doc, ">= 0.0.0", only: :dev}]
   end
 

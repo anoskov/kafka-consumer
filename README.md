@@ -32,7 +32,8 @@ config :kafka_ex,
   consumer_group: "kafka_ex" ,
   sync_timeout: 3000,
   max_restarts: 10,
-  max_seconds: 60
+  max_seconds: 60,
+  use_ssl: false
 ```
 
 * Write your own EventHandler. Functions start_link/1 and handle_event/2 is overridable
@@ -42,9 +43,9 @@ defmodule EventHandler do
   use KafkaConsumer.EventHandler
   require Logger
 
-  def handle_cast({topic, _partition, message}, state) do
+  def handle_call({topic, _partition, message}, _from, state) do
     Logger.debug "from #{topic} message: #{inspect message}"
-    {:noreply, state}
+    {:reply, :ok, state}
   end
 end
 ```

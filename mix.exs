@@ -3,7 +3,7 @@ defmodule KafkaConsumer.Mixfile do
 
   def project do
     [app: :kafka_consumer,
-     version: "1.1.0",
+     version: "1.2.0",
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -19,7 +19,7 @@ defmodule KafkaConsumer.Mixfile do
   end
 
   defp deps do
-    [{:kafka_ex, "0.6.1"},
+    [{:kafka_ex, "0.6.3"},
      {:poolboy, "~> 1.5"},
      {:gproc, "~> 0.6.0"},
      {:mock, "~> 0.2.0", only: :test},

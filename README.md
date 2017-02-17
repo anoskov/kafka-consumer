@@ -32,7 +32,8 @@ config :kafka_ex,
   consumer_group: "kafka_ex" ,
   sync_timeout: 3000,
   max_restarts: 10,
-  max_seconds: 60
+  max_seconds: 60,
+  use_ssl: false
 ```
 
 * Write your own EventHandler. Functions start_link/1 and handle_event/2 is overridable

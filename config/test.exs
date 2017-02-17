@@ -8,7 +8,8 @@ config :kafka_ex,
   disable_default_worker: false,
   sync_timeout: 3000,
   max_restarts: 10,
-  max_seconds: 60
+  max_seconds: 60,
+  use_ssl: false
 
 config :kafka_consumer,
   default_pool_size: 5,

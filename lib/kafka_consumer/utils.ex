@@ -7,7 +7,7 @@ defmodule KafkaConsumer.Utils do
   @doc """
   Check topic in Kafka
   """
-  @spec topic_exists?(String.t, Integer.t) :: boolean
+  @spec topic_exists?(String.t, non_neg_integer) :: boolean
   def topic_exists?(topic, partition) do
     KafkaEx.latest_offset(topic, partition) != :topic_not_found
   end
@@ -33,7 +33,7 @@ defmodule KafkaConsumer.Utils do
   @doc """
   Returns event handlers spec from KafkaConsumer config
   """
-  @spec event_handlers_spec :: Supervisor.Spec.spec
+  @spec event_handlers_spec :: [Supervisor.Spec.spec]
   def event_handlers_spec do
     childs = Enum.map(event_handlers(), &event_handler_spec/1)
 

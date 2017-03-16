@@ -43,7 +43,7 @@ defmodule KafkaConsumer.Server do
   @doc """
   Consume messages from topic or stop consumer if topic not found
   """
-  @spec consume(Map.t, pid) :: atom
+  @spec consume(%{optional(atom) => term}, pid) :: atom
   def consume(%{topic: topic, partition: partition, worker_name: worker_name,
       handler: handler, handler_pool: handler_pool}, consumer) do
     if Utils.topic_exists?(topic, partition) do

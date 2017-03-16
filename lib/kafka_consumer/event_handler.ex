@@ -9,7 +9,7 @@ defmodule KafkaConsumer.EventHandler do
   @doc """
   Handle event from topic
   """
-  @callback handle_event(pid, payload) :: {atom, map}
+  @callback handle_event(pid, payload) :: term
 
   defmacro __using__(_) do
     quote do

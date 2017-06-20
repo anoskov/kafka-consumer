@@ -1,8 +1,14 @@
 use Mix.Config
 
-config :kafka_consumer,
-  default_pool_size: 5,
-  default_pool_max_overflow: 10,
-  event_handlers: []
+config :brod,
+  clients: [
+    kafka_client: [
+      endpoints: [{'localhost', 9092}],
+      auto_start_producers: true
+    ]
+  ]
 
-import_config "#{Mix.env}.exs"
+config :kafka_consumer,
+  max_restarts: 3,
+  max_seconds: 5,
+  consumers: []

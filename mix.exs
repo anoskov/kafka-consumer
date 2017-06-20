@@ -3,35 +3,24 @@ defmodule KafkaConsumer.Mixfile do
 
   def project do
     [app: :kafka_consumer,
-     version: "1.2.0",
-     elixir: "~> 1.3",
+     version: "2.0.0",
+     elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps(),
-     aliases: aliases(),
-     description: description(),
-     package: package()]
+     deps: deps()]
   end
 
   def application do
-    [mod: {KafkaConsumer, []},
-     applications: [:kafka_ex, :poolboy, :gproc]]
+    [extra_applications: [:logger]]
   end
 
   defp deps do
-    [{:kafka_ex, "~> 0.6.3"},
-     {:poolboy, "~> 1.5"},
-     {:gproc, "~> 0.6.0"},
-     {:mock, "~> 0.2.0", only: :test},
+    [{:brod, "~> 2.4.1"},
      {:ex_doc, ">= 0.0.0", only: :dev}]
   end
 
-  defp aliases do
-    ["test": ["test --no-start"]]
-  end
-
   defp description do
-    "Consumer for Kafka using kafka_ex"
+    "Consumer for Kafka using brod"
   end
 
   defp package do
